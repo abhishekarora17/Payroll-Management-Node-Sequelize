@@ -41,9 +41,12 @@ exports.login = async (req, res) => {
             return res.status(400).json({ message: "Invalid email or password" });
         }
 
-        const token = jwt.sign({ id: existingUser.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const token = await createToken(newUser);
+        if (!token) {
+            return res.status(500).json({ message: "Failed to create token" });
+        }
 
-        return res.status(200).json({ message: "Login successful", token });
+        return res.status(200).json({ message: "Login successful",user : existingUser, token: token });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Internal server error" });

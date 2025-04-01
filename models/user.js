@@ -32,6 +32,15 @@ module.exports = (sequelize, DataTypes) => {
             { 
                 type: DataTypes.STRING 
             },
+    },  {
+        defaultScope: 
+        {
+            attributes: { exclude: ["password"] }  // Exclude password by default
+        },
+        scopes: 
+        {
+            withPassword: { attributes: { include: ["password"] } }  // Use explicitly when needed
+        }
     });
 
     User.beforeCreate(async (user) => {
