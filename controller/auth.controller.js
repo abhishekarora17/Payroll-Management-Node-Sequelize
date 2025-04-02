@@ -1,4 +1,4 @@
-const {user} = require("../models/user");
+const {User} = require("../models");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
@@ -8,14 +8,14 @@ exports.register = async (req, res) => {
     const { name, email, password } = req.body;
 
     try {
-        const existingUser = await user.findOne({ where: { email } });
+        const existingUser = await User.findOne({ where: { email } });
         if (existingUser) {
             return res.status(400).json({ message: "Email already exists" });
         }
 
-        const newUser = await user.create({ name, email, password });
+        const newUser = await User.create({ name, email, password });
 
-        const token = await createToken(newUser);
+        const token = await createToken(newUser.id);
         if (!token) {
             return res.status(500).json({ message: "Failed to create token" });
         }
@@ -31,7 +31,7 @@ exports.login = async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        const existingUser = await user.findOne({ where: { email } });
+        const existingUser = await User.findOne({ where: { email } });
         if (!existingUser) {
             return res.status(400).json({ message: "Invalid email or password" });
         }
@@ -41,7 +41,7 @@ exports.login = async (req, res) => {
             return res.status(400).json({ message: "Invalid email or password" });
         }
 
-        const token = await createToken(newUser);
+        const token = await createToken(newUser.id);
         if (!token) {
             return res.status(500).json({ message: "Failed to create token" });
         }
@@ -73,11 +73,10 @@ exports.logout = async (req, res) => {
     }
 }
 
-const createToken = async ( req ) => {
-    const { id } = req.body;
+const createToken = async ( id ) => {
     const accessToken = jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRATION });
     const refreshToken = jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_REFRESH_EXPIRATION });
-    const token = await user.update({ accessToken, refreshToken }, { where: { id } });
+    const token = await User.update({ accessToken, refreshToken }, { where: { id } });
     if (!token) {
         return null;
     }
