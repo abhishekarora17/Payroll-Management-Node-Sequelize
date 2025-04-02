@@ -60,12 +60,12 @@ exports.logout = async (req, res) => {
         if (!id) {
             return res.status(400).json({ message: "User ID is required" });
         }
-        const userRecord = await user.findOne({ where: { id } });
+        const userRecord = await User.findOne({ where: { id } });
         if (!userRecord) {
             return res.status(404).json({ message: "User not found" });
         }
         // Clear the access and refresh tokens in the database
-        await user.update({ accessToken: null, refreshToken: null }, { where: { id } });
+        await User.update({ accessToken: null, refreshToken: null }, { where: { id } });
         return res.status(200).json({ message: "Logout successful" });
     } catch (error) {
         console.error(error);
@@ -81,4 +81,25 @@ const createToken = async ( id ) => {
         return null;
     }
     return { accessToken, refreshToken };
+}
+
+exports.refreshToken = async (req, res) => {
+    const { refreshToken } = req.body;
+
+    if(!refreshToken){
+        return res.status(400).json({message: 'Refresh token is required.'});
+    }
+
+    const userRecord = await User.findOne({ where: { refreshToken } });
+    if (!userRecord) {
+        return res.status(404).json({ message: "User not found." });
+    }
+
+    newToken = await createToken(userRecord.id);
+
+    if (!newToken) {
+        return res.status(500).json({ message: "Failed to create token." });
+    }
+
+    return res.status(200).json({ message: "Token generated successfully.", token: newToken });
 }

@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const user = require("../models/user");
+const {User} = require("../models");
 require("dotenv").config();
 
 module.exports = (req, res, next) => {
@@ -11,7 +11,7 @@ module.exports = (req, res, next) => {
         if (err) return res.status(401).json({ message: "Unauthorized" });
 
         try {
-            const userRecord = await user.findOne({
+            const userRecord = await User.findOne({
                 where: {
                     id: decoded.id,
                     accessToken: token,
