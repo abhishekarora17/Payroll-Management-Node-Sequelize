@@ -41,7 +41,7 @@ exports.login = async (req, res) => {
             return res.status(400).json({ message: "Invalid email or password" });
         }
 
-        const token = await createToken(newUser.id);
+        const token = await createToken(existingUser.id);
         if (!token) {
             return res.status(500).json({ message: "Failed to create token" });
         }
@@ -73,6 +73,33 @@ exports.logout = async (req, res) => {
     }
 }
 
+exports.refreshToken = async (req, res) => {
+    const { refreshToken } = req.body;
+
+    if(!refreshToken){
+        return res.status(400).json({message: 'Refresh token is required.'});
+    }
+
+    try {
+        const userRecord = await User.findOne({ where: { refreshToken } });
+        if (!userRecord) {
+            return res.status(404).json({ message: "User not found." });
+        }
+    
+        let newToken = await createToken(userRecord.id);
+    
+        if (!newToken) {
+            return res.status(500).json({ message: "Failed to create token." });
+        }
+    
+        return res.status(200).json({ message: "Token generated successfully.", token: newToken });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Internal server error." });
+    }
+
+}
+
 const createToken = async ( id ) => {
     const accessToken = jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRATION });
     const refreshToken = jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_REFRESH_EXPIRATION });
@@ -81,25 +108,4 @@ const createToken = async ( id ) => {
         return null;
     }
     return { accessToken, refreshToken };
-}
-
-exports.refreshToken = async (req, res) => {
-    const { refreshToken } = req.body;
-
-    if(!refreshToken){
-        return res.status(400).json({message: 'Refresh token is required.'});
-    }
-
-    const userRecord = await User.findOne({ where: { refreshToken } });
-    if (!userRecord) {
-        return res.status(404).json({ message: "User not found." });
-    }
-
-    newToken = await createToken(userRecord.id);
-
-    if (!newToken) {
-        return res.status(500).json({ message: "Failed to create token." });
-    }
-
-    return res.status(200).json({ message: "Token generated successfully.", token: newToken });
 }
