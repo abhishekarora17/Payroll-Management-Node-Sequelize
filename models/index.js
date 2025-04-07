@@ -14,6 +14,7 @@ const sequelize = new Sequelize(
 
 // Import models
 const User = require("./user")(sequelize, DataTypes);
+const Role = require("./role")(sequelize, DataTypes);
 
 // Sync models with database
 sequelize
@@ -22,4 +23,4 @@ sequelize
     .then(() => console.log(" Database synchronized"))
     .catch((err) => console.error(" Sync error:", err));
 
-module.exports = { sequelize, User };
+module.exports = { sequelize, User , Role };

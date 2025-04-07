@@ -24,6 +24,10 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.STRING, 
                 allowNull: false 
             },
+        roleId: 
+            { 
+                type: DataTypes.INTEGER 
+            },
         accessToken: 
             { 
                 type: DataTypes.STRING 
@@ -50,6 +54,10 @@ module.exports = (sequelize, DataTypes) => {
         //     withPassword: { attributes: { include: ["password"] } }  // Use explicitly when needed
         // }
     });
+
+    User.associate = (models) => {
+        User.belongsTo(models.Role , { foreignKey  : 'roleId'})
+    }
 
     User.beforeCreate(async (user) => {
         user.password = await bcrypt.hash(user.password, 10);
