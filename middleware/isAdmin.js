@@ -32,7 +32,7 @@ module.exports = async (req, res, next) => {
                 return res.status(401).json({ message: "Unauthorized" });
             }
 
-            if(user.role != 1) {
+            if(user.role.id != 1) {
                 return res.status(403).json({ message: "Forbidden! Admins Only." });
             }
 

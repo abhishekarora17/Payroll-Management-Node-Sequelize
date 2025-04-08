@@ -11,6 +11,17 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.STRING, 
                 allowNull: false 
             },
+    }, {
+        defaultScope: 
+        {
+            attributes: { 
+                exclude: [
+                    "createdAt",
+                    "updatedAt"
+                ] 
+            }  // Exclude password by default
+        },
+
     });
 
     Role.associate = (models) => {

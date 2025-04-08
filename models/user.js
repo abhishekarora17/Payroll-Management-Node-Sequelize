@@ -42,6 +42,7 @@ module.exports = (sequelize, DataTypes) => {
             attributes: { 
                 exclude: [
                     // "password",
+                    
                     "accessToken",
                     "refreshToken",
                     "createdAt",
