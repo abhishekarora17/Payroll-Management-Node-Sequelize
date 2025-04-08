@@ -1,11 +1,11 @@
-const {User} = require("../models");
+const {User, Role} = require("../models");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 require("dotenv").config();
 
 exports.register = async (req, res) => {
-    const { name, email, password } = req.body;
+    const { name, email, password , role } = req.body;
 
     try {
         const existingUser = await User.findOne({ where: { email } });
@@ -14,6 +14,12 @@ exports.register = async (req, res) => {
         }
 
         const newUser = await User.create({ name, email, password });
+        const roleEntity = await Role.findOne({ where: { name: role } });
+        if (!roleEntity) {
+            return res.status(400).json({ message: "Role not found" });
+        }
+        newUser.roleId = roleEntity.id;
+        await newUser.save();
 
         const token = await createToken(newUser.id);
         if (!token) {
@@ -31,7 +37,13 @@ exports.login = async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        const existingUser = await User.findOne({ where: { email } });
+        const existingUser = await User.findOne(
+            { 
+                where: { email } , 
+                include: [{ model: Role, as: 'role' }]
+            }
+        );
+
         if (!existingUser) {
             return res.status(400).json({ message: "Invalid email or password" });
         }

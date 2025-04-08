@@ -13,14 +13,22 @@ const sequelize = new Sequelize(
 );
 
 // Import models
-const User = require("./user")(sequelize, DataTypes);
-const Role = require("./role")(sequelize, DataTypes);
+const models = {};
+models.User = require("./user")(sequelize, DataTypes);
+models.Role = require("./role")(sequelize, DataTypes);
+
+// Call associate methods
+Object.keys(models).forEach(modelName => {
+    if (models[modelName].associate) {
+        models[modelName].associate(models);
+    }
+});
 
 // Sync models with database
 sequelize
-    .sync({ alter: true }) // Automatically updates schema safely instead of dropping tables
+    .sync({ alter: true })
     // .sync({ force: true }) // Use this for development to drop and recreate tables
-    .then(() => console.log(" Database synchronized"))
-    .catch((err) => console.error(" Sync error:", err));
+    .then(() => console.log("Database synchronized"))
+    .catch((err) => console.error("Sync error:", err));
 
-module.exports = { sequelize, User , Role };
+module.exports = { sequelize, ...models };
