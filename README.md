@@ -6,8 +6,14 @@ A Node.js CRUD API with authentication using Sequelize ORM and PostgreSQL. Inclu
 
 ### 🔧 Installation
 
-1. Clone the repo:
+Clone the repo:
 
    ```bash
    git clone [<your-repo-url>](https://github.com/abhishekarora17/Node-Sequelize.git)
    cd <project-folder>
+
+   
+---
+
+Let me know if you want this tailored to a specific auth strategy (e.g., bcrypt + JWT) or framework style!
+
