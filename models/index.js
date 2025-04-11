@@ -13,9 +13,12 @@ const sequelize = new Sequelize(
 );
 
 // Import models
-const models = {};
-models.User = require("./user")(sequelize, DataTypes);
-models.Role = require("./role")(sequelize, DataTypes);
+const models = {
+   User: require("./user")(sequelize, DataTypes),
+   Role: require("./role")(sequelize, DataTypes),
+   Salary: require("./salary")(sequelize, DataTypes),
+   Attendance: require("./attendance")(sequelize, DataTypes)
+};
 
 // Call associate methods
 Object.keys(models).forEach(modelName => {
