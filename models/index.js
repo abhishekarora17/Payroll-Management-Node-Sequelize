@@ -17,7 +17,8 @@ const models = {
    User: require("./user")(sequelize, DataTypes),
    Role: require("./role")(sequelize, DataTypes),
    Salary: require("./salary")(sequelize, DataTypes),
-   Attendance: require("./attendance")(sequelize, DataTypes)
+   Attendance: require("./attendance")(sequelize, DataTypes),
+   SalaryRecord: require("./salaryRecord")(sequelize, DataTypes),
 };
 
 // Call associate methods

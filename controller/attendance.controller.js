@@ -1,7 +1,6 @@
-const { Attendance } = require('../models');
+const { Attendance, User } = require('../models');
 const { Op } = require('sequelize');
 const moment = require('moment');
-const { User } = require('../models');
 
 // Get all attendance records 
 exports.getAllAttendance = async (req, res) => {
