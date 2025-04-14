@@ -15,6 +15,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 require('./cron/markAttendenceStatus');
+app.use('/uploads', express.static('uploads'));
 
 app.use("/auth", authRoutes);
 app.use("/user", userRoutes);

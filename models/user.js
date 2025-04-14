@@ -28,6 +28,11 @@ module.exports = (sequelize, DataTypes) => {
             { 
                 type: DataTypes.INTEGER 
             },
+        profilePic: 
+            {
+                type: DataTypes.STRING,
+                allowNull: true
+            },
         accessToken: 
             { 
                 type: DataTypes.STRING 

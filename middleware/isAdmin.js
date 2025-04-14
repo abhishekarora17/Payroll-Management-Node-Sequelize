@@ -23,7 +23,7 @@ module.exports = async (req, res, next) => {
             include: [
                 {
                     model: Role,
-                    as: 'role' // only if you used an alias in association
+                    as: 'role'
                 }
             ]
             });
