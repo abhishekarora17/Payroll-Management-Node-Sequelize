@@ -2,7 +2,7 @@ const cron = require('node-cron');
 const { User, Attendance } = require('../models'); // Adjust path as needed
 const { Op } = require('sequelize');
 
-cron.schedule('0 13 * * *', async () => {
+cron.schedule('50 23 * * *', async () => {
     try {
         console.log('Running daily attendence status cron job...');
 
