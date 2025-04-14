@@ -6,11 +6,20 @@ const moment = require('moment');
 exports.createSalaryRecord = async (req, res) => {
     const { userId, baseSalary } = req.body;
     try {
+        // Check if the user exists
+        const user = await User.findByPk(userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        // Check if the salary record already exists
+        const existingSalaryRecord = await SalaryRecord.findOne({ where: { userId } });
+        if (existingSalaryRecord) {
+            return res.status(400).json({ message: "Salary record already exists for this user" });
+        }
+        // Create a new salary record
         const salaryRecord = await SalaryRecord.create({
             userId,
-            baseSalary,
-            fromMonth: moment().format('YYYY-MM-DD'),
-            toMonth: moment().format('YYYY-MM-DD'),
+            baseSalary
         });
         res.status(201).json(salaryRecord);
     } catch (error) {
@@ -20,15 +29,14 @@ exports.createSalaryRecord = async (req, res) => {
 
 // Update a salary Record
 exports.updateSalaryRecord = async (req, res) =>  {
-    const { id } = req.params;
-    const { baseSalary, fromMonth, toMonth} = req.body;
+    const { userId } = req.params;
+    const { baseSalary } = req.body;
     try {
-        const salaryRecord = await SalaryRecord.findByPk(id);
+        const salaryRecord = await SalaryRecord.findOne(userId);
         if (!salaryRecord) {
             return res.status(404).json({ message: "Salary record not found" });
         }
-        salaryRecord.toMonth    = toMonth;
-        salaryRecord.fromM0onth = fromMonth;
+
         salaryRecord.baseSalary = baseSalary;
         await salaryRecord.save();
         res.status(200).json(salaryRecord);
@@ -40,7 +48,9 @@ exports.updateSalaryRecord = async (req, res) =>  {
 // Get all salary records
 exports.getAllSalaryRecords = async (req, res) => {
     try {
-        const salaryRecords = await SalaryRecord.findAll();
+        const salaryRecords = await User.findAll({
+            include: [{ model: SalaryRecord, as: 'salary' }]
+        });
         if (!salaryRecords) {
             return res.status(404).json({ message: "Salary records not found" });
         }
@@ -52,13 +62,13 @@ exports.getAllSalaryRecords = async (req, res) => {
 }
 
 // Get salary record by userId
-exports.getAllSalaryRecord = async (req, res) => {
+exports.getSalaryRecord = async (req, res) => {
     const { userId } = req.params;
 
     try {
-        const salaryRecord = await SalaryRecord.findOne({
-            where: { userId },
-            include: [{ model: User, as: 'user' }]
+        const salaryRecord = await User.findOne({
+            where: { id: userId },
+            include: [{ model: SalaryRecord, as: 'salary' }]
         });
 
         if (!salaryRecord) {

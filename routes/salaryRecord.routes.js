@@ -10,6 +10,6 @@ router.put('/updateSalaryRecord/:id', isAuthenticated, salaryRecordController.up
 // Get all salary records route
 router.get('/getAllSalaryRecords', isAuthenticated, salaryRecordController.getAllSalaryRecords);
 // Get salary record by userId route
-router.get('/getSalaryRecord/:userId', isAuthenticated, salaryRecordController.getAllSalaryRecord);
+router.get('/getSalaryRecord/:userId', isAuthenticated, salaryRecordController.getSalaryRecord);
 
 module.exports = router;

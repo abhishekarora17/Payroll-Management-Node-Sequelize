@@ -58,7 +58,9 @@ module.exports = (sequelize, DataTypes) => {
 
     User.associate = (models) => {
         User.belongsTo(models.Role, { foreignKey: 'roleId', as: 'role' });
+        User.hasMany(models.SalaryRecord, { foreignKey: 'userId', as: 'salary' });
     };
+
 
     User.beforeCreate(async (user) => {
         user.password = await bcrypt.hash(user.password, 10);
