@@ -14,6 +14,8 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
+require('./cron/markAttendenceStatus');
+
 app.use("/auth", authRoutes);
 app.use("/user", userRoutes);
 app.use("/attendance", attendanceRoutes);
