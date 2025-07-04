@@ -11,7 +11,12 @@ const attendanceRoutes = require("./routes/attendance.routes");
 const salaryRecordRoutes = require("./routes/salaryRecord.routes");
 
 const app = express();
-app.use(cors());
+
+app.use(cors({
+  origin: 'http://localhost:3000', // React Vite dev server
+  credentials: true               // Allow cookies/session if used
+}));
+
 app.use(bodyParser.json());
 
 require('./cron/markAttendenceStatus');
